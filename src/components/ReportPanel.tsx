@@ -98,21 +98,37 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
                     theme: 'grid',
                     headStyles: { fillColor: [79, 70, 229] }, // Primary-ish color
                     didParseCell: (data) => {
-                        if (data.section === 'body' && statusIdx !== -1) {
-                            const rowRaw = data.row.raw as any;
-                            const statusRaw = rowRaw[statusIdx];
-                            const status = (statusRaw && typeof statusRaw === 'object' ? (statusRaw as any).content : String(statusRaw)).toLowerCase();
-                            const okStatuses = ['goedgekeurd', 'approved', 'correct', 'ok'];
+                        if (data.section === 'body') {
+                            // Link styling
+                            if (data.cell.raw && typeof data.cell.raw === 'object' && (data.cell.raw as any).link) {
+                                data.cell.styles.textColor = [0, 0, 255];
+                            }
 
-                            if (!okStatuses.includes(status)) {
-                                data.cell.styles.fillColor = [254, 226, 226]; // Light red
-                                data.cell.styles.textColor = [153, 27, 27]; // Dark red
+                            // Error/Status styling
+                            if (statusIdx !== -1) {
+                                const rowRaw = data.row.raw as any;
+                                const statusRaw = rowRaw[statusIdx];
+                                const status = (statusRaw && typeof statusRaw === 'object' ? (statusRaw as any).content : String(statusRaw)).toLowerCase();
+                                const okStatuses = ['goedgekeurd', 'approved', 'correct', 'ok'];
 
-                                // Make status cell itself bold for extra accentuation
-                                if (data.column.index === statusIdx) {
-                                    data.cell.styles.fontStyle = 'bold';
+                                if (!okStatuses.includes(status)) {
+                                    data.cell.styles.fillColor = [254, 226, 226]; // Light red
+                                    data.cell.styles.textColor = [153, 27, 27]; // Dark red
+
+                                    // Make status cell itself bold for extra accentuation
+                                    if (data.column.index === statusIdx) {
+                                        data.cell.styles.fontStyle = 'bold';
+                                    }
                                 }
                             }
+                        }
+                    },
+                    didDrawCell: (data) => {
+                        // Handle links
+                        if (data.section === 'body' && data.cell.raw && typeof data.cell.raw === 'object' && (data.cell.raw as any).link) {
+                            doc.link(data.cell.x, data.cell.y, data.cell.width, data.cell.height, {
+                                url: (data.cell.raw as any).link
+                            });
                         }
                     }
                 });
