@@ -36,6 +36,7 @@ export default function Processor({ data, columns, instruction, onInstructionCha
 
         const updatedData = [...data];
         const BATCH_SIZE = 3;
+        const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
         for (let i = 0; i < total; i += BATCH_SIZE) {
             const batch = dataToProcess.slice(i, i + BATCH_SIZE);
@@ -52,27 +53,33 @@ export default function Processor({ data, columns, instruction, onInstructionCha
                         }),
                     });
 
-                    if (!response.ok) throw new Error('Failed');
-
                     const result = await response.json();
 
                     const rowIdx = updatedData.findIndex(r => r._id === row._id);
                     if (rowIdx !== -1) {
-                        updatedData[rowIdx] = {
-                            ...updatedData[rowIdx],
-                            'AI_Status': result.status,
-                            'AI_Reasoning': result.reasoning
-                        };
+                        if (!response.ok) {
+                            updatedData[rowIdx] = {
+                                ...updatedData[rowIdx],
+                                'AI_Status': 'Error',
+                                'AI_Reasoning': result.reasoning || result.details || 'Fout bij verwerking'
+                            };
+                        } else {
+                            updatedData[rowIdx] = {
+                                ...updatedData[rowIdx],
+                                'AI_Status': result.status,
+                                'AI_Reasoning': result.reasoning
+                            };
+                        }
                     }
 
-                } catch (error) {
+                } catch (error: any) {
                     console.error(error);
                     const rowIdx = updatedData.findIndex(r => r._id === row._id);
                     if (rowIdx !== -1) {
                         updatedData[rowIdx] = {
                             ...updatedData[rowIdx],
                             'AI_Status': 'Error',
-                            'AI_Reasoning': 'Verwerking mislukt'
+                            'AI_Reasoning': error.message || 'Verbinding mislukt'
                         };
                     }
                 }
@@ -81,6 +88,11 @@ export default function Processor({ data, columns, instruction, onInstructionCha
             await Promise.all(promises);
             setProgress(Math.min(100, Math.round(((i + BATCH_SIZE) / total) * 100)));
             onUpdateData([...updatedData]);
+
+            // Add delay between batches to avoid rate limits
+            if (i + BATCH_SIZE < total) {
+                await sleep(1000); // 1 second delay
+            }
         }
 
         setIsProcessing(false);

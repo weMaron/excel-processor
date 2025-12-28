@@ -109,19 +109,31 @@ export async function POST(req: NextRequest) {
         }
 
     } catch (error: any) {
-        console.error("AI Error Details:", {
+        const errorDetails = {
             message: error.message,
             stack: error.stack,
+            type: error.constructor.name,
+            code: error.code || error.status || 'unknown',
             env: {
                 hasGenKey: !!process.env.GOOGLE_GENAI_API_KEY,
-                hasFireKey: !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
                 hasConfig: !!process.env.FIREBASE_WEBAPP_CONFIG
             }
-        });
+        };
+
+        console.error("AI Error Details:", errorDetails);
+
+        // Check for common errors
+        let reasoning = 'AI Processing failed';
+        if (error.message?.includes('429') || error.message?.includes('Quota')) {
+            reasoning = 'Rate limit of Quota reached (429). Probeer het over een moment opnieuw.';
+        } else if (error.message?.includes('timeout')) {
+            reasoning = 'De AI aanroep duurde te lang (timeout).';
+        }
+
         return NextResponse.json({
             status: 'Error',
-            reasoning: 'Processing failed',
+            reasoning,
             details: error.message
-        }, { status: 500 });
+        }, { status: error.status || 500 });
     }
 }
