@@ -5,9 +5,20 @@ export const dynamic = 'force-dynamic';
 
 import { ColumnConfig } from '@/components/ColumnMapper';
 
-// Initialize Gemini
-const apiKey = process.env.GOOGLE_GENAI_API_KEY || process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || '');
+// Helper to get API Key robustly
+function getApiKey() {
+    let key = process.env.GOOGLE_GENAI_API_KEY || process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+
+    if (!key && process.env.FIREBASE_WEBAPP_CONFIG) {
+        try {
+            const config = JSON.parse(process.env.FIREBASE_WEBAPP_CONFIG);
+            key = config.apiKey;
+        } catch (e) {
+            console.error("Failed to parse FIREBASE_WEBAPP_CONFIG in API route", e);
+        }
+    }
+    return key;
+}
 
 async function fetchFileAsBase64(url: string): Promise<{ data: string, mimeType: string } | null> {
     try {
@@ -29,9 +40,12 @@ async function fetchFileAsBase64(url: string): Promise<{ data: string, mimeType:
 }
 
 export async function POST(req: NextRequest) {
+    const apiKey = getApiKey();
     if (!apiKey) {
         return NextResponse.json({ status: 'Error', reasoning: 'No API Key configured' }, { status: 500 });
     }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
 
     try {
         const { row, instruction, columnConfigs } = await req.json() as { row: any, instruction: string, columnConfigs: ColumnConfig[] };
@@ -75,7 +89,7 @@ export async function POST(req: NextRequest) {
         Do not include markdown formatting or backticks. Just the JSON.
         `;
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
         // Combine prompt text with file parts
         const input = fileParts.length > 0 ? [prompt, ...fileParts] : prompt;
