@@ -11,6 +11,7 @@
   "dependencies": {
     "@genkit-ai/core": "^1.27.0",
     "@genkit-ai/googleai": "^1.27.0",
+    "@google-cloud/firestore": "^7.11.6",
     "@google/generative-ai": "^0.24.1",
     "@types/lodash": "^4.17.21",
     "clsx": "^2.1.1",
@@ -24,6 +25,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "tailwind-merge": "^3.4.0",
+    "winston": "^3.19.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
