@@ -31,6 +31,17 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
         onSettingsChange({ ...settings, selectedColumns: newSelected });
     };
 
+    const getBase64ImageFromUrl = async (url: string): Promise<string> => {
+        const res = await fetch(url);
+        const blob = await res.blob();
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    };
+
     const handleGenerate = async () => {
         if (!settings.groupBy || settings.selectedColumns.length === 0) {
             alert('Selecteer een groepering en minimaal één kolom.');
@@ -40,6 +51,8 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
         setIsGenerating(true);
 
         try {
+            const logoBase64 = await getBase64ImageFromUrl('/logo.png').catch(() => null);
+
             // Group data
             const groups = data.reduce((acc: any, row: any) => {
                 const val = String(row[settings.groupBy] || 'Onbekend');
@@ -54,6 +67,10 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
                 const pageWidth = doc.internal.pageSize.getWidth();
 
                 // Branding / Header
+                if (logoBase64) {
+                    doc.addImage(logoBase64, 'PNG', pageWidth - 50, 10, 36, 12);
+                }
+
                 doc.setFontSize(20);
                 doc.setTextColor(40);
                 doc.text('Analyse Rapport', 14, 20);
@@ -123,6 +140,11 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
                             }
                         }
                     },
+                    didDrawPage: (data) => {
+                        if (logoBase64) {
+                            doc.addImage(logoBase64, 'PNG', pageWidth - 50, 10, 36, 12);
+                        }
+                    },
                     didDrawCell: (data) => {
                         // Handle links
                         if (data.section === 'body' && data.cell.raw && typeof data.cell.raw === 'object' && (data.cell.raw as any).link) {
@@ -142,6 +164,9 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
                 const pageHeight = doc.internal.pageSize.getHeight();
                 if (finalY + 30 > pageHeight) {
                     doc.addPage();
+                    if (logoBase64) {
+                        doc.addImage(logoBase64, 'PNG', pageWidth - 50, 10, 36, 12);
+                    }
                     doc.setFontSize(11);
                     doc.setTextColor(40);
                     doc.text(`Totaal regels: ${totalCount}`, 14, 20);

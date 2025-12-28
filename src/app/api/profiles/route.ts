@@ -32,16 +32,30 @@ export async function GET(req: NextRequest) {
             ...doc.data()
         }));
         return NextResponse.json(data);
-    } catch (error) {
-        console.error('Fetch error:', error);
-        return NextResponse.json({ error: 'Failed to fetch profiles' }, { status: 500 });
+    } catch (error: any) {
+        console.error('Fetch error details:', {
+            message: error.message,
+            stack: error.stack,
+            env: {
+                hasConfig: !!process.env.FIREBASE_WEBAPP_CONFIG,
+                projectId: process.env.FIREBASE_PROJECT_ID || 'missing'
+            }
+        });
+        return NextResponse.json({
+            error: 'Failed to fetch profiles',
+            details: error.message,
+            code: error.code
+        }, { status: 500 });
     }
 }
 
 export async function POST(req: NextRequest) {
+    let action, id;
     try {
         const body = await req.json();
-        const { action, name, data, id } = body;
+        action = body.action;
+        id = body.id;
+        const { name, data } = body;
 
         if (!action) return NextResponse.json({ error: 'Missing action' }, { status: 400 });
 
@@ -73,6 +87,7 @@ export async function POST(req: NextRequest) {
             }
         }
 
+
         if (action === 'delete') {
             if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
             await Promise.race([
@@ -83,8 +98,16 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
-    } catch (error) {
-        console.error('Post error:', error);
-        return NextResponse.json({ error: 'Operation failed' }, { status: 500 });
+    } catch (error: any) {
+        console.error('Post error details:', {
+            message: error.message,
+            action,
+            id
+        });
+        return NextResponse.json({
+            error: 'Operation failed',
+            details: error.message,
+            code: error.code
+        }, { status: 500 });
     }
 }

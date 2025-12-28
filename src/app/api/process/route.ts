@@ -108,8 +108,20 @@ export async function POST(req: NextRequest) {
             });
         }
 
-    } catch (error) {
-        console.error("AI Error", error);
-        return NextResponse.json({ status: 'Error', reasoning: 'Processing failed' }, { status: 500 });
+    } catch (error: any) {
+        console.error("AI Error Details:", {
+            message: error.message,
+            stack: error.stack,
+            env: {
+                hasGenKey: !!process.env.GOOGLE_GENAI_API_KEY,
+                hasFireKey: !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+                hasConfig: !!process.env.FIREBASE_WEBAPP_CONFIG
+            }
+        });
+        return NextResponse.json({
+            status: 'Error',
+            reasoning: 'Processing failed',
+            details: error.message
+        }, { status: 500 });
     }
 }

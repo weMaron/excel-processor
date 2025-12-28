@@ -164,9 +164,12 @@ export default function Home() {
         </div>
       )}
       <header className="w-full max-w-7xl flex justify-between items-center mb-12">
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-          Excel Processor <span className="text-slate-600 text-lg font-normal ml-2">v1.1</span>
-        </h1>
+        <div className="flex items-center gap-4">
+          <img src="/logo.png" alt="weMaron Logo" className="h-12 w-auto object-contain" />
+          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+            Excel Processor <span className="text-slate-600 text-lg font-normal ml-2">v1.1</span>
+          </h1>
+        </div>
         {step !== 'upload' && (
           <div className="flex items-center gap-4">
             <div className="text-slate-400 text-sm glass px-3 py-1 rounded-full">
