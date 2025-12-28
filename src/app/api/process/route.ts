@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
         Do not include markdown formatting or backticks. Just the JSON.
         `;
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
 
         // Combine prompt text with file parts
         const input = fileParts.length > 0 ? [prompt, ...fileParts] : prompt;
