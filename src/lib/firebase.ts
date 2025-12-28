@@ -19,15 +19,26 @@ configsToTry.forEach(envKey => {
     if (envVal) {
         try {
             const parsed = JSON.parse(envVal);
-            // Merge but prioritize existing apiKey if found
-            firebaseConfig = { ...parsed, ...firebaseConfig };
-            // Ensure project ID is synced
-            if (!firebaseConfig.projectId && parsed.projectId) firebaseConfig.projectId = parsed.projectId;
+            // Merge: only overwrite with non-empty values
+            Object.keys(parsed).forEach(key => {
+                if (parsed[key]) {
+                    firebaseConfig[key] = parsed[key];
+                }
+            });
         } catch (e) {
             console.error(`Failed to parse ${envKey}`, e);
         }
     }
 });
+
+// Final fallback/debug logging (keys are safe to log existence of)
+if (process.env.NODE_ENV === 'production') {
+    console.log("Firebase discovery:", {
+        hasApiKey: !!firebaseConfig.apiKey,
+        hasProjectId: !!firebaseConfig.projectId,
+        projectId: firebaseConfig.projectId
+    });
+}
 
 // Initialize Firebase only if we have a config (prevents build errors if keys are missing)
 let app: any;
