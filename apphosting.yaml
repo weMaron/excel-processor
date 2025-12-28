@@ -4,14 +4,14 @@ schemaVersion: "v1"
 env:
   # The Firebase Web App config is needed at runtime for the frontend/API to talk to Firestore
   - variable: FIREBASE_WEBAPP_CONFIG
-    value: ""
+    value: '{"apiKey":"AIzaSyDj09uUt6gP6eFbplgXr3-86gUNGaEuLtc","authDomain":"excel-processor-22645.firebaseapp.com","projectId":"excel-processor-22645","storageBucket":"excel-processor-22645.firebasestorage.app","messagingSenderId":"563894621004","appId":"1:563894621004:web:23211cc673ccd264faf5e9"}'
     availability:
       - BUILD
       - RUNTIME
   
   # The Gemini API Key for AI processing
   - variable: GOOGLE_GENAI_API_KEY
-    value: ""
+    value: "AIzaSyAol5MCmRhTEjD7ySoC2zRXXLMVLAMfbWU"
     availability:
       - BUILD
       - RUNTIME
