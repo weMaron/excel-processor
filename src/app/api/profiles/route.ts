@@ -15,6 +15,12 @@ import {
 } from 'firebase/firestore';
 
 export async function GET(req: NextRequest) {
+    if (!db) {
+        return NextResponse.json({
+            error: 'Firebase not initialized',
+            details: 'Database connection is null. Check environment variables (FIREBASE_WEBAPP_CONFIG).'
+        }, { status: 500 });
+    }
     try {
         const q = query(collection(db, 'unifiedProfiles'), orderBy('updatedAt', 'desc'));
 
@@ -50,6 +56,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+    if (!db) {
+        return NextResponse.json({
+            error: 'Firebase not initialized',
+            details: 'Database connection is null.'
+        }, { status: 500 });
+    }
     let action, id;
     try {
         const body = await req.json();

@@ -12,23 +12,35 @@ let firebaseConfig: any = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || process.env.FIREBASE_APP_ID,
 };
 
-// Check for App Hosting combined config
-if (!firebaseConfig.apiKey && process.env.FIREBASE_WEBAPP_CONFIG) {
-    try {
-        firebaseConfig = JSON.parse(process.env.FIREBASE_WEBAPP_CONFIG);
-    } catch (e) {
-        console.error("Failed to parse FIREBASE_WEBAPP_CONFIG", e);
+// Robust discovery for App Hosting
+const configsToTry = ['FIREBASE_WEBAPP_CONFIG', 'FIREBASE_CONFIG'];
+configsToTry.forEach(envKey => {
+    const envVal = process.env[envKey];
+    if (envVal) {
+        try {
+            const parsed = JSON.parse(envVal);
+            // Merge but prioritize existing apiKey if found
+            firebaseConfig = { ...parsed, ...firebaseConfig };
+            // Ensure project ID is synced
+            if (!firebaseConfig.projectId && parsed.projectId) firebaseConfig.projectId = parsed.projectId;
+        } catch (e) {
+            console.error(`Failed to parse ${envKey}`, e);
+        }
     }
-}
+});
 
 // Initialize Firebase only if we have a config (prevents build errors if keys are missing)
 let app: any;
-if (firebaseConfig.apiKey) {
-    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+if (firebaseConfig.apiKey || firebaseConfig.projectId) {
+    try {
+        app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    } catch (e) {
+        console.error("Firebase init failed", e);
+    }
 }
 
-const db = app ? getFirestore(app) : null as any;
-const storage = app ? getStorage(app) : null as any;
-const auth = app ? getAuth(app) : null as any;
+const db = app ? getFirestore(app) : null;
+const storage = app ? getStorage(app) : null;
+const auth = app ? getAuth(app) : null;
 
 export { app, db, storage, auth };
