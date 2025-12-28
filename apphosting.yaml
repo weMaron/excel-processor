@@ -4,12 +4,14 @@ schemaVersion: "v1"
 env:
   # The Firebase Web App config is needed at runtime for the frontend/API to talk to Firestore
   - variable: FIREBASE_WEBAPP_CONFIG
+    value: ""
     availability:
       - BUILD
       - RUNTIME
   
   # The Gemini API Key for AI processing
   - variable: GOOGLE_GENAI_API_KEY
+    value: ""
     availability:
       - BUILD
       - RUNTIME
