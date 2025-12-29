@@ -4,7 +4,7 @@ import React from 'react';
 import { ColumnConfig } from './ColumnMapper';
 import { Plus, Trash2, Filter } from 'lucide-react';
 
-export type FilterOperator = 'contains' | 'equals' | 'startsWith' | 'gt' | 'lt' | 'eq_date' | 'after_date' | 'before_date';
+export type FilterOperator = 'contains' | 'not_contains' | 'equals' | 'startsWith' | 'is_not_empty' | 'gt' | 'lt' | 'eq_date' | 'after_date' | 'before_date';
 
 export interface FilterRule {
     id: string;
@@ -57,8 +57,10 @@ export default function FilterBuilder({ columns, rules, onFilterChange }: Filter
             default: // string and link
                 return [
                     { label: 'Bevat', value: 'contains' },
+                    { label: 'Bevat niet', value: 'not_contains' },
                     { label: 'Gelijk aan', value: 'equals' },
-                    { label: 'Begint met', value: 'startsWith' }
+                    { label: 'Begint met', value: 'startsWith' },
+                    { label: 'Niet leeg', value: 'is_not_empty' }
                 ];
         }
     };
@@ -127,13 +129,15 @@ export default function FilterBuilder({ columns, rules, onFilterChange }: Filter
                                         ))}
                                     </select>
 
-                                    <input
-                                        type={column?.type === 'date' ? 'date' : (column?.type === 'number' || column?.type === 'currency') ? 'number' : 'text'}
-                                        value={rule.value}
-                                        onChange={(e) => updateRule(rule.id, { value: e.target.value })}
-                                        className="bg-slate-800 border border-slate-700 text-slate-200 rounded px-2 py-1.5 text-xs focus:border-primary focus:outline-none flex-1 min-w-0"
-                                        placeholder="..."
-                                    />
+                                    {rule.operator !== 'is_not_empty' && (
+                                        <input
+                                            type={column?.type === 'date' ? 'date' : (column?.type === 'number' || column?.type === 'currency') ? 'number' : 'text'}
+                                            value={rule.value}
+                                            onChange={(e) => updateRule(rule.id, { value: e.target.value })}
+                                            className="bg-slate-800 border border-slate-700 text-slate-200 rounded px-2 py-1.5 text-xs focus:border-primary focus:outline-none flex-1 min-w-0"
+                                            placeholder="..."
+                                        />
+                                    )}
                                 </div>
                             </div>
                         );
@@ -152,6 +156,10 @@ export const filterData = (data: any[], rules: FilterRule[], columns: ColumnConf
             const rawValue = row[rule.field];
             const filterValue = rule.value;
             const column = columns.find(c => c.targetHeader === rule.field);
+
+            if (rule.operator === 'is_not_empty') {
+                return rawValue !== null && rawValue !== undefined && String(rawValue).trim() !== '';
+            }
 
             if (rawValue === null || rawValue === undefined) return false;
 
@@ -180,6 +188,7 @@ export const filterData = (data: any[], rules: FilterRule[], columns: ColumnConf
 
             if (rule.operator === 'equals') return strValue === strFilter;
             if (rule.operator === 'contains') return strValue.includes(strFilter);
+            if (rule.operator === 'not_contains') return !strValue.includes(strFilter);
             if (rule.operator === 'startsWith') return strValue.startsWith(strFilter);
 
             return true;
