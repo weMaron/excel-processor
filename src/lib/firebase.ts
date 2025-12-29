@@ -15,8 +15,9 @@ let firebaseConfig: any = {
 // Robust discovery for App Hosting
 const configsToTry = ['FIREBASE_WEBAPP_CONFIG', 'FIREBASE_CONFIG'];
 configsToTry.forEach(envKey => {
-    const envVal = process.env[envKey];
+    let envVal = process.env[envKey];
     if (envVal) {
+        envVal = envVal.trim();
         try {
             const parsed = JSON.parse(envVal);
             // Merge: only overwrite with non-empty values
@@ -25,8 +26,13 @@ configsToTry.forEach(envKey => {
                     firebaseConfig[key] = parsed[key];
                 }
             });
-        } catch (e) {
-            console.error(`Failed to parse ${envKey}`, e);
+        } catch (e: any) {
+            console.error(`Failed to parse ${envKey}`, {
+                error: e.message,
+                valLength: envVal.length,
+                prefix: envVal.substring(0, 10),
+                suffix: envVal.substring(envVal.length - 10)
+            });
         }
     }
 });
