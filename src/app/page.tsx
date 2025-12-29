@@ -8,8 +8,9 @@ import FilterBuilder, { FilterRule, filterData } from '@/components/FilterBuilde
 import Processor from '@/components/Processor';
 import ReportPanel from '@/components/ReportPanel';
 import { ExcelData } from '@/lib/excel-utils';
-import { ArrowLeft, Loader2, FolderClosed, Save, BrainCircuit, Filter, FileText, LayoutGrid } from 'lucide-react';
+import { ArrowLeft, Loader2, FolderClosed, Save, BrainCircuit, Filter, FileText, LayoutGrid, Check, Trash2 } from 'lucide-react';
 import { UnifiedProfile } from '@/lib/profile-utils';
+import clsx from 'clsx';
 
 export default function Home() {
   const [step, setStep] = useState<'upload' | 'mapping' | 'dashboard'>('upload');
@@ -54,11 +55,19 @@ export default function Home() {
         return JSON.stringify(pHeaders) === JSON.stringify(currentHeaders);
       });
 
-      if (matching.length === 1) {
-        applyProfile(matching[0]);
-      } else if (matching.length > 1) {
-        setAvailableProfiles(matching);
-        setShowProfileSelector(true);
+      if (matching.length > 0) {
+        // Sort by most recently updated
+        const sorted = matching.sort((a, b) =>
+          (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0)
+        );
+
+        applyProfile(sorted[0]);
+
+        if (sorted.length > 1) {
+          setAvailableProfiles(sorted);
+          // Don't show modal automatically anymore, we auto-load the latest.
+          // User can switch via the button if needed.
+        }
       }
     } catch (e) {
       console.error("Auto-load failed", e);
@@ -67,11 +76,10 @@ export default function Home() {
 
   const applyProfile = (p: UnifiedProfile) => {
     setActiveProfile(p);
+    setProfileName(p.name);
     setFilterRules(p.filters || []);
     setAiInstruction(p.aiInstruction || '');
     setReportSettings(p.reportSettings || { groupBy: '', selectedColumns: [], headerText: '' });
-    // Also update column config mapping if it differs? 
-    // For now assume if headers match, mapping is compatible.
   };
 
   // Auto-Save Effect (5 seconds debounce)
@@ -126,31 +134,64 @@ export default function Home() {
       {showProfileSelector && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="glass-card max-w-lg w-full p-8 rounded-2xl shadow-2xl border border-white/10 animate-in zoom-in duration-300">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-primary/20 rounded-xl">
-                <FolderClosed className="w-6 h-6 text-primary" />
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-primary/20 rounded-xl">
+                  <FolderClosed className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Selecteer Profiel</h3>
+                  <p className="text-slate-400 text-sm">Passend bij dit bestandsformaat.</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">Profiel Gevonden</h3>
-                <p className="text-slate-400 text-sm">Meerdere profielen passen bij dit bestand.</p>
-              </div>
+              <button onClick={() => setShowProfileSelector(false)} className="text-slate-400 hover:text-white">
+                <ArrowLeft className="w-6 h-6 rotate-90" />
+              </button>
             </div>
 
             <div className="space-y-3 max-h-60 overflow-y-auto mb-6 pr-2">
+              {availableProfiles.length === 0 && (
+                <div className="text-center py-8 text-slate-500 italic">Geen matchende profielen gevonden.</div>
+              )}
               {availableProfiles.map(p => (
-                <button
-                  key={p.id}
-                  onClick={() => {
-                    applyProfile(p);
-                    setShowProfileSelector(false);
-                  }}
-                  className="w-full text-left p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 hover:bg-slate-700/50 hover:border-primary/50 transition-all group"
-                >
-                  <div className="font-medium text-white group-hover:text-primary transition-colors">{p.name}</div>
-                  <div className="text-xs text-slate-500 mt-1">
-                    Laatst bijgewerkt: {p.updatedAt?.seconds ? new Date(p.updatedAt.seconds * 1000).toLocaleDateString('nl-NL') : 'Onbekend'}
-                  </div>
-                </button>
+                <div key={p.id} className="group relative">
+                  <button
+                    onClick={() => {
+                      applyProfile(p);
+                      setShowProfileSelector(false);
+                    }}
+                    className={clsx(
+                      "w-full text-left p-4 rounded-xl border transition-all flex justify-between items-center pr-12",
+                      activeProfile?.id === p.id
+                        ? "bg-primary/10 border-primary/50 text-white"
+                        : "bg-slate-800/40 border-slate-700/50 hover:bg-slate-700/50 hover:border-primary/50 text-slate-300"
+                    )}
+                  >
+                    <div>
+                      <div className="font-medium group-hover:text-primary transition-colors">{p.name}</div>
+                      <div className="text-[10px] text-slate-500 mt-1">
+                        Laatst bijgewerkt: {p.updatedAt?.seconds ? new Date(p.updatedAt.seconds * 1000).toLocaleDateString('nl-NL') : 'Onbekend'}
+                      </div>
+                    </div>
+                    {activeProfile?.id === p.id && <Check className="w-4 h-4 text-primary" />}
+                  </button>
+                  <button
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      if (confirm(`Weet je zeker dat je profiel "${p.name}" wilt verwijderen?`)) {
+                        const { deleteProfile, getProfiles } = await import('@/lib/profile-utils');
+                        await deleteProfile(p.id!);
+                        const updated = await getProfiles();
+                        const currentHeaders = columnConfig.map(c => c.originalHeader).sort();
+                        setAvailableProfiles(updated.filter(up => JSON.stringify([...up.headers].sort()) === JSON.stringify(currentHeaders)));
+                        if (activeProfile?.id === p.id) setActiveProfile(null);
+                      }
+                    }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               ))}
             </div>
 
@@ -158,7 +199,7 @@ export default function Home() {
               onClick={() => setShowProfileSelector(false)}
               className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-medium transition-colors"
             >
-              Nieuw profiel maken
+              Annuleren
             </button>
           </div>
         </div>
@@ -232,20 +273,36 @@ export default function Home() {
                   <div className="text-3xl font-bold text-white">{filteredData.length} <span className="text-base font-normal text-slate-500">/ {processedData.length}</span></div>
                 </div>
 
-                {/* Profile Info & Save */}
                 <div className="glass-card p-6 rounded-xl space-y-4 border-l-4 border-primary">
-                  <div className="flex items-center gap-2 text-primary">
-                    <Save className="w-5 h-5" />
-                    <h3 className="font-bold">Profiel</h3>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-primary">
+                      <Save className="w-5 h-5" />
+                      <h3 className="font-bold">Profiel</h3>
+                    </div>
+                    <button
+                      onClick={async () => {
+                        const { getProfiles } = await import('@/lib/profile-utils');
+                        const all = await getProfiles();
+                        const currentHeaders = columnConfig.map(c => c.originalHeader).sort();
+                        setAvailableProfiles(all.filter(p => JSON.stringify([...p.headers].sort()) === JSON.stringify(currentHeaders)));
+                        setShowProfileSelector(true);
+                      }}
+                      className="text-[10px] text-slate-500 hover:text-white transition-colors"
+                    >
+                      Wissel profiel
+                    </button>
                   </div>
                   <div>
                     <label className="text-xs text-slate-500 block mb-1 uppercase">Naam</label>
                     <input
                       type="text"
-                      value={activeProfile?.name || profileName}
+                      value={profileName}
                       onChange={(e) => {
-                        if (activeProfile) setActiveProfile({ ...activeProfile, name: e.target.value });
-                        else setProfileName(e.target.value);
+                        setProfileName(e.target.value);
+                        // If name changes, we are potentially saving a NEW profile
+                        if (activeProfile && e.target.value !== activeProfile.name) {
+                          setActiveProfile({ ...activeProfile, id: undefined, name: e.target.value });
+                        }
                       }}
                       placeholder="bv. Maandelijkse Check"
                       className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-sm text-white focus:border-primary focus:outline-none"
@@ -256,7 +313,7 @@ export default function Home() {
                       onClick={() => handleSaveAsNew(profileName || 'Nieuw Profiel')}
                       className="w-full bg-primary/20 hover:bg-primary/30 text-primary py-2 rounded font-medium text-sm transition-all"
                     >
-                      Sla op als profiel
+                      Sla op als nieuw profiel
                     </button>
                   )}
                   {activeProfile?.id && (
