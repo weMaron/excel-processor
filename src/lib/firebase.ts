@@ -19,7 +19,9 @@ configsToTry.forEach(envKey => {
     if (envVal) {
         envVal = envVal.trim();
         try {
-            const parsed = JSON.parse(envVal);
+            // Check if it's double-escaped (common in some environments)
+            const processedVal = envVal.replace(/\\n/g, '\n').replace(/\\r/g, '\r');
+            const parsed = JSON.parse(processedVal);
             // Merge: only overwrite with non-empty values
             Object.keys(parsed).forEach(key => {
                 if (parsed[key]) {
