@@ -95,11 +95,11 @@ export default function DataTable({ data, columns }: DataTableProps) {
                             setPageSize(Number(e.target.value));
                             setCurrentPage(1);
                         }}
-                        className="bg-white dark:bg-slate-950 border border-secondary/20 rounded-xl px-4 py-1.5 text-xs text-slate-900 dark:text-white font-bold focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all"
+                        className="bg-input-bg border border-input-border rounded-xl px-4 py-1.5 text-xs text-input-text font-bold focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all"
                     >
-                        <option className="text-slate-900 dark:text-white dark:bg-slate-950" value={10}>10</option>
-                        <option className="text-slate-900 dark:text-white dark:bg-slate-950" value={50}>50</option>
-                        <option className="text-slate-900 dark:text-white dark:bg-slate-950" value={100}>100</option>
+                        <option className="text-input-text bg-input-bg" value={10}>10</option>
+                        <option className="text-input-text bg-input-bg" value={50}>50</option>
+                        <option className="text-input-text bg-input-bg" value={100}>100</option>
                     </select>
                 </div>
             </div>
@@ -108,12 +108,12 @@ export default function DataTable({ data, columns }: DataTableProps) {
             <div className="glass-card overflow-hidden shadow-2xl relative z-0">
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
-                        <thead className="text-[10px] font-black text-slate-900 dark:text-white force-light-text uppercase bg-white/50 dark:bg-slate-900/50 backdrop-blur-md sticky top-0 z-10 border-b border-secondary/20 tracking-widest">
+                        <thead className="text-[10px] font-black text-slate-900 dark:text-white force-light-text uppercase bg-card-bg backdrop-blur-md sticky top-0 z-10 border-b border-card-border tracking-widest">
                             <tr>
                                 {columns.map((col) => (
                                     <th
                                         key={col.targetHeader}
-                                        className="px-6 py-4 cursor-pointer hover:bg-secondary/5 transition-colors select-none"
+                                        className="px-6 py-4 cursor-pointer hover:bg-primary/5 transition-colors select-none"
                                         onClick={() => handleSort(col.targetHeader)}
                                     >
                                         <div className="flex items-center gap-2">
@@ -138,12 +138,12 @@ export default function DataTable({ data, columns }: DataTableProps) {
                                     <tr
                                         key={row._id || idx}
                                         className={clsx(
-                                            "transition-colors",
+                                            "transition-colors border-b border-card-border",
                                             needsAttention
                                                 ? "bg-amber-500/10 text-amber-900 dark:text-amber-400 border-l-4 border-l-amber-500 font-medium"
                                                 : isCorrect
                                                     ? "bg-emerald-500/10 text-emerald-900 dark:text-emerald-400 border-l-4 border-l-emerald-500 font-medium"
-                                                    : "text-slate-700 dark:text-slate-200 hover:bg-secondary/5"
+                                                    : "text-foreground hover:bg-primary/5"
                                         )}
                                     >
                                         {columns.map((col) => (
@@ -174,16 +174,16 @@ export default function DataTable({ data, columns }: DataTableProps) {
                     <button
                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                         disabled={currentPage === 1}
-                        className="p-4 rounded-2xl glass-card bg-white/80 dark:bg-slate-900/40 border border-secondary/20 hover:bg-secondary/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg active:scale-95"
+                        className="p-4 rounded-2xl glass-card border border-card-border hover:bg-card-bg disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg active:scale-95"
                     >
-                        <ChevronLeft className="w-6 h-6 text-slate-900 dark:text-white" />
+                        <ChevronLeft className="w-6 h-6 text-foreground" />
                     </button>
                     <button
                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                         disabled={currentPage === totalPages || totalPages === 0}
-                        className="p-4 rounded-2xl glass-card bg-white/80 dark:bg-slate-900/40 border border-secondary/20 hover:bg-secondary/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg active:scale-95"
+                        className="p-4 rounded-2xl glass-card border border-card-border hover:bg-card-bg disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg active:scale-95"
                     >
-                        <ChevronRight className="w-6 h-6 text-slate-900 dark:text-white" />
+                        <ChevronRight className="w-6 h-6 text-foreground" />
                     </button>
                 </div>
             </div>

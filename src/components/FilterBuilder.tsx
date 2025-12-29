@@ -69,20 +69,20 @@ export default function FilterBuilder({ columns, rules, onFilterChange }: Filter
 
     return (
         <div className="glass-card p-6 space-y-4 relative z-20 text-left">
-            <div className="flex items-center justify-between border-b border-secondary/10 pb-3">
-                <h3 className="text-lg font-bold text-slate-950 dark:text-white force-light-text flex items-center gap-2">
-                    <Filter className="w-5 h-5 text-secondary" /> Filter
+            <div className="flex items-center justify-between border-b border-card-border pb-3">
+                <h3 className="text-base font-bold text-foreground force-light-text flex items-center gap-2">
+                    <Filter className="w-4 h-4 text-secondary" /> Filter
                 </h3>
                 <button
                     onClick={addRule}
-                    className="text-xs bg-secondary/10 hover:bg-secondary/20 text-secondary px-3 py-1.5 rounded-xl flex items-center gap-1 transition-all font-bold border border-secondary/20 shadow-sm shadow-secondary/5"
+                    className="text-[10px] bg-secondary/10 hover:bg-secondary/20 text-secondary px-3 py-1.5 rounded-xl flex items-center gap-1 transition-all font-semibold border border-secondary/20 shadow-sm"
                 >
                     <Plus className="w-3 h-3" /> Regel
                 </button>
             </div>
 
             {rules.length === 0 ? (
-                <div className="text-center py-6 text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.2em] text-xs border-2 border-dashed border-secondary/10 rounded-2xl">
+                <div className="text-center py-6 text-foreground/50 font-bold uppercase tracking-[0.2em] text-[10px] border-2 border-dashed border-card-border rounded-2xl">
                     Geen filters actief.
                 </div>
             ) : (
@@ -92,10 +92,10 @@ export default function FilterBuilder({ columns, rules, onFilterChange }: Filter
                         const operators = column ? getOperatorsForType(column.type) : [];
 
                         return (
-                            <div key={rule.id} className="relative bg-white/80 dark:bg-slate-900/20 p-4 pt-10 rounded-2xl border border-secondary/10 animate-in fade-in slide-in-from-top-2 shadow-sm">
+                            <div key={rule.id} className="relative bg-card-bg/20 p-4 pt-10 rounded-2xl border border-card-border animate-in fade-in slide-in-from-top-2 shadow-sm">
                                 <button
                                     onClick={() => removeRule(rule.id)}
-                                    className="absolute top-3 right-3 p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                                    className="absolute top-3 right-3 p-2 text-foreground/50 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
                                     title="Verwijder regel"
                                 >
                                     <Trash2 className="w-4 h-4" />
@@ -103,7 +103,7 @@ export default function FilterBuilder({ columns, rules, onFilterChange }: Filter
 
                                 <div className="space-y-3">
                                     <div className="flex flex-col gap-1.5">
-                                        <label className="text-[10px] text-slate-700 dark:text-slate-400 font-black uppercase tracking-[0.2em] ml-1">Kolom</label>
+                                        <label className="text-[9px] text-foreground/70 font-bold uppercase tracking-[0.2em] ml-1">Kolom</label>
                                         <select
                                             value={rule.field}
                                             onChange={(e) => {
@@ -114,7 +114,7 @@ export default function FilterBuilder({ columns, rules, onFilterChange }: Filter
                                                     operator: getOperatorsForType(newType)[0].value
                                                 });
                                             }}
-                                            className="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2 text-xs focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold"
+                                            className="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2 text-[11px] focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-semibold"
                                         >
                                             {columns.map(col => (
                                                 <option key={col.targetHeader} value={col.targetHeader}>{col.targetHeader}</option>
@@ -124,11 +124,11 @@ export default function FilterBuilder({ columns, rules, onFilterChange }: Filter
 
                                     <div className="grid grid-cols-2 gap-2">
                                         <div className="flex flex-col gap-1.5">
-                                            <label className="text-[10px] text-slate-700 dark:text-slate-400 font-black uppercase tracking-[0.2em] ml-1">Conditie</label>
+                                            <label className="text-[9px] text-foreground/70 font-bold uppercase tracking-[0.2em] ml-1">Conditie</label>
                                             <select
                                                 value={rule.operator}
                                                 onChange={(e) => updateRule(rule.id, { operator: e.target.value as FilterOperator })}
-                                                className="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2 text-xs focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold"
+                                                className="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2 text-[11px] focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-semibold"
                                             >
                                                 {operators.map(op => (
                                                     <option key={op.value} value={op.value}>{op.label}</option>
@@ -138,12 +138,12 @@ export default function FilterBuilder({ columns, rules, onFilterChange }: Filter
 
                                         {rule.operator !== 'is_not_empty' && (
                                             <div className="flex flex-col gap-1.5">
-                                                <label className="text-[10px] text-slate-700 dark:text-slate-400 font-black uppercase tracking-[0.2em] ml-1">Waarde</label>
+                                                <label className="text-[9px] text-foreground/70 font-bold uppercase tracking-[0.2em] ml-1">Waarde</label>
                                                 <input
                                                     type={column?.type === 'date' ? 'date' : (column?.type === 'number' || column?.type === 'currency') ? 'number' : 'text'}
                                                     value={rule.value}
                                                     onChange={(e) => updateRule(rule.id, { value: e.target.value })}
-                                                    className="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2 text-xs focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold placeholder:text-slate-400"
+                                                    className="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-3 py-2 text-[11px] focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-semibold placeholder:text-slate-400 min-h-[36px]"
                                                     placeholder="..."
                                                 />
                                             </div>

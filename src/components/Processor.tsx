@@ -117,10 +117,10 @@ export default function Processor({ data, columns, instruction, onInstructionCha
 
     return (
         <div className="glass-card p-6 space-y-6 text-left">
-            <div className="flex items-center justify-between border-b border-secondary/10 pb-4">
+            <div className="flex items-center justify-between border-b border-card-border pb-4">
                 <div className="flex items-center gap-3">
                     <BrainCircuit className="w-6 h-6 text-secondary" />
-                    <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">AI Verwerking</h2>
+                    <h2 className="text-xl font-black text-foreground tracking-tight">AI Verwerking</h2>
                 </div>
                 <div className="flex gap-2">
                     <button
@@ -145,7 +145,7 @@ export default function Processor({ data, columns, instruction, onInstructionCha
             )}
 
             <div className="space-y-2">
-                <label className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.2em] block">Instructies</label>
+                <label className="text-[10px] text-foreground/50 font-black uppercase tracking-[0.2em] block">Instructies</label>
                 <textarea
                     value={instruction}
                     onChange={(e) => onInstructionChange(e.target.value)}

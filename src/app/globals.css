@@ -7,24 +7,35 @@
   --color-secondary: var(--secondary);
   --color-accent: var(--accent);
   --color-sidebar-active: var(--sidebar-active);
-  --color-sidebar-active: var(--sidebar-active);
   --color-input-bg: var(--input-bg);
   --font-sans: var(--font-inter), sans-serif;
+
+  /* Force dark: variant to follow the .dark class */
+  --variant-dark: &:where(.dark, .dark *);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: color 0.3s ease;
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color-scheme: light dark;
 }
 
 :root {
-  /* Light Mode Palette: "Clean Energy / Ocean Pulse" */
+  color-scheme: light;
+  /* Light Mode Palette */
   --background: #f0fdfa;
-  /* Very light cyan tint */
   --foreground: #020617;
-  /* Slate 950 - Absolute Contrast */
+  --bg-gradient: linear-gradient(135deg, #22d3ee 0%, #cffafe 60%, #93c5fd 100%);
 
   --primary: #0891b2;
-  /* Cyan-600 */
   --secondary: #0d9488;
-  /* Teal-600 */
   --accent: #7c3aed;
-  /* Violet-600 */
 
   --sidebar-bg: rgba(255, 255, 255, 0.4);
   --sidebar-active: #7c3aed;
@@ -37,15 +48,14 @@
   --input-bg: rgba(255, 255, 255, 0.8);
   --input-border: #cbd5e1;
   --input-text: #020617;
-
-  /* Manual override for slate-950 to ensure it exists if theme defaults are weird */
-  --color-slate-950: #020617;
 }
 
 .dark {
-  /* Dark Mode Palette: "Deep Tech" */
+  color-scheme: dark;
+  /* Dark Mode Palette */
   --background: #020617;
   --foreground: #ffffff;
+  --bg-gradient: linear-gradient(135deg, #020617 0%, #171c35 50%, #312e81 100%);
 
   --primary: #22d3ee;
   --secondary: #2dd4bf;
@@ -62,29 +72,6 @@
   --input-bg: #020617;
   --input-border: #1e293b;
   --input-text: #ffffff;
-}
-
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), Arial, sans-serif;
-  /* Fallback added */
-  min-height: 100vh;
-  overflow-x: hidden;
-  transition: color 0.3s ease;
-}
-
-/* Gradients */
-body:not(.dark) {
-  /* Light Mode: Vibrant Cyan to Blue with deeper mid-tones */
-  background-image: linear-gradient(135deg, #22d3ee 0%, #cffafe 60%, #93c5fd 100%);
-  background-attachment: fixed;
-}
-
-.dark body {
-  /* Dark Mode: Deep Ocean Blue / Purple Gradient */
-  background-image: linear-gradient(135deg, #020617 0%, #171c35 50%, #312e81 100%);
-  background-attachment: fixed;
 }
 
 /* Custom Scrollbar */

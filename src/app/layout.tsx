@@ -25,11 +25,30 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark')
-                } else {
-                  document.documentElement.classList.remove('dark')
+                // Clear poisoned localStorage from previous force-dark attempt
+                if (localStorage.theme === 'dark' && !window.location.search.includes('persist')) {
+                  localStorage.removeItem('theme');
                 }
+
+                function applyTheme() {
+                  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                  const isDark = localStorage.theme === 'dark' || (!('theme' in localStorage) && mediaQuery.matches);
+                  
+                  if (isDark) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                }
+
+                applyTheme();
+                
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                  if (!('theme' in localStorage)) {
+                    if (e.matches) document.documentElement.classList.add('dark');
+                    else document.documentElement.classList.remove('dark');
+                  }
+                });
               } catch (_) {}
             `,
           }}

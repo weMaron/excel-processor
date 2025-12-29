@@ -216,7 +216,7 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
 
     return (
         <div className="glass-card p-6 space-y-6">
-            <div className="flex items-center gap-3 border-b border-secondary/10 pb-4">
+            <div className="flex items-center gap-3 border-b border-card-border pb-4">
                 <FileText className="w-6 h-6 text-secondary" />
                 <h2 className="text-xl font-black text-foreground tracking-tight">Rapportage</h2>
             </div>
@@ -224,7 +224,7 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
             <div className="space-y-4">
                 {/* Group By */}
                 <div>
-                    <label className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                    <label className="text-[10px] text-foreground/50 font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                         <Settings2 className="w-4 h-4 text-secondary/60" /> Groepeer PDF op:
                     </label>
                     <select
@@ -241,7 +241,7 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
 
                 {/* Columns Selection */}
                 <div>
-                    <label className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                    <label className="text-[10px] text-foreground/50 font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                         <Columns className="w-4 h-4 text-secondary/60" /> Kolommen in PDF:
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -253,7 +253,7 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
                                     "px-3 py-2 rounded-xl text-xs font-bold border transition-all text-left flex items-center justify-between",
                                     settings.selectedColumns.includes(col)
                                         ? "bg-secondary/10 border-secondary text-secondary shadow-sm shadow-secondary/10"
-                                        : "bg-input-bg border-input-border text-slate-500 hover:border-secondary/40 hover:bg-secondary/5 shadow-sm"
+                                        : "bg-input-bg border-input-border text-foreground/50 hover:border-secondary/40 hover:bg-secondary/5 shadow-sm"
                                 )}
                             >
                                 <span className="truncate mr-2">{col}</span>
@@ -265,7 +265,7 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
 
                 {/* Header Text */}
                 <div>
-                    <label className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.2em] mb-2 block">Header Tekstblok:</label>
+                    <label className="text-[10px] text-foreground/50 font-black uppercase tracking-[0.2em] mb-2 block">Header Tekstblok:</label>
                     <textarea
                         value={settings.headerText}
                         onChange={(e) => onSettingsChange({ ...settings, headerText: e.target.value })}
@@ -281,7 +281,7 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
                 className={clsx(
                     "w-full py-5 px-6 rounded-3xl font-black uppercase tracking-widest flex items-center justify-between transition-all active:scale-95 shadow-xl relative overflow-hidden group",
                     isGenerating
-                        ? "bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
+                        ? "bg-card-bg/50 text-foreground/30 cursor-not-allowed"
                         : "bg-gradient-to-r from-secondary to-primary text-white hover:shadow-primary/25 hover:scale-[1.02]"
                 )}
             >

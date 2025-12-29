@@ -76,7 +76,7 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
                     "relative border-2 border-dashed rounded-3xl p-16 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden",
                     isDragging
                         ? "border-secondary bg-secondary/10 scale-[1.02] shadow-2xl shadow-secondary/20"
-                        : "border-secondary/20 dark:border-white/10 hover:border-secondary/40 hover:bg-white/40 glass bg-white/20 shadow-xl",
+                        : "border-card-border hover:border-secondary/40 hover:bg-card-bg/40 glass-card bg-card-bg/20 shadow-xl",
                     isProcessing && "opacity-50 pointer-events-none"
                 )}
                 onDragOver={handleDragOver}

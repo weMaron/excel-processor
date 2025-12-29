@@ -33,20 +33,7 @@ export default function Home() {
   const [showProfileSelector, setShowProfileSelector] = useState(false);
   const [profileName, setProfileName] = useState('');
 
-  // Theme State - Forced Dark
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-
-  React.useEffect(() => {
-    // Force Dark Mode
-    setTheme('dark');
-    document.documentElement.classList.add('dark');
-    localStorage.theme = 'dark';
-  }, []);
-
-  const toggleTheme = () => {
-    // Disabled for now
-  };
-
+  // No theme state here anymore, handled globally
   const handleDataLoaded = (data: ExcelData, name: string) => {
     setRawData(data);
     setFileName(name);
@@ -246,13 +233,6 @@ export default function Home() {
                 Opnieuw
               </button>
             )}
-            <button
-              onClick={toggleTheme}
-              className="hidden p-3 rounded-2xl glass hover:bg-white/40 text-foreground/60 hover:text-primary transition-all ml-2"
-              title={theme === 'dark' ? 'Wissel naar Licht' : 'Wissel naar Donker'}
-            >
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
           </div>
         )}
       </header>

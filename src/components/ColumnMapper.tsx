@@ -92,7 +92,7 @@ export default function ColumnMapper({ data, onConfirm, onCancel }: ColumnMapper
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto glass-card rounded-3xl p-8 border border-secondary/20 shadow-2xl relative overflow-hidden">
+        <div className="w-full max-w-4xl mx-auto glass-card rounded-3xl p-8 border border-card-border shadow-2xl relative overflow-hidden">
             <div className="flex items-center justify-between mb-8">
                 <div className="space-y-1">
                     <h2 className="text-4xl font-black text-foreground tracking-tighter">Kolommen Mappen</h2>
@@ -120,7 +120,7 @@ export default function ColumnMapper({ data, onConfirm, onCancel }: ColumnMapper
                     const sampleValue = data.rows.length > 0 ? data.rows[0][config.originalHeader] : '';
 
                     return (
-                        <div key={index} className="grid grid-cols-12 gap-4 items-center p-6 bg-white/40 dark:bg-white/5 border border-white/60 dark:border-white/10 rounded-3xl shadow-sm transition-all hover:bg-white/60 group">
+                        <div key={index} className="grid grid-cols-12 gap-4 items-center p-6 bg-input-bg/40 border border-card-border rounded-3xl shadow-sm transition-all hover:bg-input-bg/60 group">
                             {/* Original Column Name */}
                             <div className="col-span-3">
                                 <label className="text-[10px] text-secondary font-bold uppercase tracking-wider mb-1 block">Kolom</label>
@@ -141,7 +141,7 @@ export default function ColumnMapper({ data, onConfirm, onCancel }: ColumnMapper
                             <div className="col-span-3">
                                 <label className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] mb-1.5 block ml-1">Datatype</label>
                                 <select
-                                    className="w-full bg-white/60 dark:bg-white/10 border border-secondary/20 rounded-xl px-3 py-2 text-sm text-foreground focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold"
+                                    className="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2 text-sm text-foreground focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold"
                                     value={config.type}
                                     onChange={(e) => handleTypeChange(index, e.target.value as any)}
                                 >
@@ -158,7 +158,7 @@ export default function ColumnMapper({ data, onConfirm, onCancel }: ColumnMapper
                                 <label className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] mb-1.5 block ml-1">Nieuwe Naam</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-white/60 dark:bg-white/10 border border-secondary/20 rounded-xl px-3 py-2 text-sm text-foreground focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold"
+                                    className="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2 text-sm text-foreground focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold"
                                     value={config.targetHeader}
                                     onChange={(e) => handleHeaderDetailChange(index, e.target.value)}
                                 />
