@@ -92,22 +92,22 @@ export default function ColumnMapper({ data, onConfirm, onCancel }: ColumnMapper
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto glass-card rounded-xl p-6">
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h2 className="text-xl font-bold text-white">Kolommen Mappen</h2>
-                    <p className="text-slate-400 text-sm">Controleer en configureer datatypes voor nauwkeurige verwerking.</p>
+        <div className="w-full max-w-4xl mx-auto glass-card rounded-3xl p-8 border border-secondary/20 shadow-2xl relative overflow-hidden">
+            <div className="flex items-center justify-between mb-8">
+                <div className="space-y-1">
+                    <h2 className="text-4xl font-black text-foreground tracking-tighter">Kolommen Mappen</h2>
+                    <p className="text-foreground/60 font-medium">Controleer en configureer datatypes voor nauwkeurige verwerking.</p>
                 </div>
                 <div className="flex gap-3">
                     <button
                         onClick={onCancel}
-                        className="px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors"
+                        className="px-6 py-2 rounded-xl text-foreground/60 hover:text-foreground font-bold transition-all"
                     >
                         Annuleren
                     </button>
                     <button
                         onClick={handleConfirm}
-                        className="px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white font-medium flex items-center gap-2 transition-colors"
+                        className="px-6 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-lg hover:shadow-primary/20 active:scale-95"
                     >
                         Doorgaan <ArrowRight className="w-4 h-4" />
                     </button>
@@ -120,28 +120,28 @@ export default function ColumnMapper({ data, onConfirm, onCancel }: ColumnMapper
                     const sampleValue = data.rows.length > 0 ? data.rows[0][config.originalHeader] : '';
 
                     return (
-                        <div key={index} className="grid grid-cols-12 gap-4 items-center p-4 bg-slate-800/30 rounded-lg border border-slate-700/50">
+                        <div key={index} className="grid grid-cols-12 gap-4 items-center p-6 bg-white/40 dark:bg-white/5 border border-white/60 dark:border-white/10 rounded-3xl shadow-sm transition-all hover:bg-white/60 group">
                             {/* Original Column Name */}
                             <div className="col-span-3">
-                                <label className="text-xs text-slate-500 uppercase font-semibold">Kolom</label>
-                                <div className="text-white font-medium truncate" title={config.originalHeader}>
+                                <label className="text-[10px] text-secondary font-bold uppercase tracking-wider mb-1 block">Kolom</label>
+                                <div className="text-foreground font-bold truncate" title={config.originalHeader}>
                                     {config.originalHeader}
                                 </div>
                             </div>
 
                             {/* Sample Value */}
                             <div className="col-span-3">
-                                <label className="text-xs text-slate-500 uppercase font-semibold">Voorbeeld (Rij 1)</label>
-                                <div className="text-slate-300 text-sm truncate" title={String(sampleValue)}>
+                                <label className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] mb-1.5 block ml-1">Voorbeeld (Rij 1)</label>
+                                <div className="text-foreground/70 font-medium text-sm truncate italic px-1" title={String(sampleValue)}>
                                     {String(sampleValue)}
                                 </div>
                             </div>
 
                             {/* Configuration */}
                             <div className="col-span-3">
-                                <label className="text-xs text-slate-500 uppercase font-semibold">Datatype</label>
+                                <label className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] mb-1.5 block ml-1">Datatype</label>
                                 <select
-                                    className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-sm text-slate-200 focus:outline-none focus:border-primary"
+                                    className="w-full bg-white/60 dark:bg-white/10 border border-secondary/20 rounded-xl px-3 py-2 text-sm text-foreground focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold"
                                     value={config.type}
                                     onChange={(e) => handleTypeChange(index, e.target.value as any)}
                                 >
@@ -155,10 +155,10 @@ export default function ColumnMapper({ data, onConfirm, onCancel }: ColumnMapper
 
                             {/* Target Name (Renaming) */}
                             <div className="col-span-3">
-                                <label className="text-xs text-slate-500 uppercase font-semibold">Nieuwe Naam</label>
+                                <label className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.2em] mb-1.5 block ml-1">Nieuwe Naam</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-sm text-slate-200 focus:outline-none focus:border-primary"
+                                    className="w-full bg-white/60 dark:bg-white/10 border border-secondary/20 rounded-xl px-3 py-2 text-sm text-foreground focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold"
                                     value={config.targetHeader}
                                     onChange={(e) => handleHeaderDetailChange(index, e.target.value)}
                                 />
@@ -168,10 +168,10 @@ export default function ColumnMapper({ data, onConfirm, onCancel }: ColumnMapper
                 })}
             </div>
 
-            <div className="mt-6 p-4 glass rounded-lg bg-blue-500/10 border-blue-500/20 text-blue-200 text-sm flex gap-3">
-                <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                <p>
-                    <strong>Tip:</strong> Zorg ervoor dat je "Datum" selecteert voor kolommen met datums (bv. "28-12-2025") en "Bedrag" voor financiële waarden om correct te kunnen filteren.
+            <div className="mt-8 p-4 rounded-2xl bg-secondary/5 border border-secondary/20 text-secondary text-sm flex gap-3 animate-in fade-in slide-in-from-bottom-2">
+                <AlertCircle className="w-5 h-5 flex-shrink-0 text-secondary" />
+                <p className="font-medium">
+                    <strong className="font-black uppercase tracking-widest text-[10px] mr-1">Tip:</strong> Zorg ervoor dat je "Datum" selecteert voor kolommen met datums (bv. "28-12-2025") en "Bedrag" voor financiële waarden om correct te kunnen filteren.
                 </p>
             </div>
         </div>

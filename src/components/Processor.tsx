@@ -116,17 +116,17 @@ export default function Processor({ data, columns, instruction, onInstructionCha
     };
 
     return (
-        <div className="glass-card rounded-xl p-6 space-y-6 text-left">
-            <div className="flex items-center justify-between border-b border-slate-700/50 pb-4">
+        <div className="glass-card p-6 space-y-6 text-left">
+            <div className="flex items-center justify-between border-b border-secondary/10 pb-4">
                 <div className="flex items-center gap-3">
-                    <BrainCircuit className="w-6 h-6 text-purple-400" />
-                    <h2 className="text-xl font-bold text-white">AI Verwerking</h2>
+                    <BrainCircuit className="w-6 h-6 text-secondary" />
+                    <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">AI Verwerking</h2>
                 </div>
                 <div className="flex gap-2">
                     <button
                         onClick={() => fileInputRef.current?.click()}
                         title="Importeren uit bestand"
-                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 transition-colors"
+                        className="p-2 rounded-xl bg-secondary/10 hover:bg-secondary/20 text-secondary transition-all border border-secondary/20 shadow-sm"
                     >
                         <Upload className="w-4 h-4" />
                         <input type="file" ref={fileInputRef} onChange={handleFileImport} className="hidden" accept=".txt,.md" />
@@ -145,24 +145,26 @@ export default function Processor({ data, columns, instruction, onInstructionCha
             )}
 
             <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300">Instructies</label>
+                <label className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.2em] block">Instructies</label>
                 <textarea
                     value={instruction}
                     onChange={(e) => onInstructionChange(e.target.value)}
-                    className="w-full h-32 bg-slate-900/50 border border-slate-700 rounded-lg p-3 text-slate-200 focus:border-purple-500 focus:outline-none resize-none"
+                    className="w-full h-32 bg-input-bg border border-input-border rounded-2xl p-4 text-sm text-input-text focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none resize-none transition-all shadow-inner placeholder:text-slate-400"
                     placeholder="Beschrijf waar de AI op moet controleren..."
                 />
             </div>
 
             {isProcessing && (
-                <div className="space-y-2">
-                    <div className="flex justify-between text-xs text-slate-400">
-                        <span>Bezig...</span>
+                <div className="space-y-3 animate-in fade-in zoom-in duration-300">
+                    <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-secondary">
+                        <span className="flex items-center gap-2">
+                            <Loader2 className="w-3 h-3 animate-spin" /> Verwerken...
+                        </span>
                         <span>{progress}%</span>
                     </div>
-                    <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                    <div className="w-full bg-secondary/10 rounded-full h-2 overflow-hidden border border-secondary/5">
                         <div
-                            className="bg-purple-500 h-full transition-all duration-300 ease-out"
+                            className="bg-gradient-to-r from-secondary to-primary h-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(6,182,212,0.5)]"
                             style={{ width: `${progress}%` }}
                         />
                     </div>
@@ -173,10 +175,10 @@ export default function Processor({ data, columns, instruction, onInstructionCha
                 onClick={handleProcess}
                 disabled={isProcessing || data.length === 0}
                 className={clsx(
-                    "w-full py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-all",
+                    "w-full py-4 rounded-3xl font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-all active:scale-95 shadow-2xl",
                     isProcessing
-                        ? "bg-slate-700 text-slate-400 cursor-not-allowed"
-                        : "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-lg shadow-purple-500/20"
+                        ? "bg-secondary/20 text-secondary cursor-not-allowed opacity-50"
+                        : "bg-gradient-to-r from-secondary to-primary hover:from-secondary/90 hover:to-primary/90 text-white shadow-secondary/20"
                 )}
             >
                 {isProcessing ? (
@@ -185,7 +187,7 @@ export default function Processor({ data, columns, instruction, onInstructionCha
                     </>
                 ) : (
                     <>
-                        <Play className="w-5 h-5" /> Start Verwerking ({data.length} regels)
+                        <Play className="w-5 h-5" /> Start ({data.length})
                     </>
                 )}
             </button>

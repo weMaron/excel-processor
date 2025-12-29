@@ -68,76 +68,87 @@ export default function FilterBuilder({ columns, rules, onFilterChange }: Filter
     if (columns.length === 0) return null;
 
     return (
-        <div className="bg-slate-800/40 border border-slate-700 rounded-xl p-6 space-y-4 relative z-20 text-left">
-            <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                    <Filter className="w-5 h-5 text-primary" /> Filter
+        <div className="glass-card p-6 space-y-4 relative z-20 text-left">
+            <div className="flex items-center justify-between border-b border-secondary/10 pb-3">
+                <h3 className="text-lg font-bold text-slate-950 dark:text-white force-light-text flex items-center gap-2">
+                    <Filter className="w-5 h-5 text-secondary" /> Filter
                 </h3>
                 <button
                     onClick={addRule}
-                    className="text-sm bg-primary/20 text-primary hover:bg-primary/30 px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors"
+                    className="text-xs bg-secondary/10 hover:bg-secondary/20 text-secondary px-3 py-1.5 rounded-xl flex items-center gap-1 transition-all font-bold border border-secondary/20 shadow-sm shadow-secondary/5"
                 >
-                    <Plus className="w-4 h-4" /> Regel
+                    <Plus className="w-3 h-3" /> Regel
                 </button>
             </div>
 
             {rules.length === 0 ? (
-                <div className="text-center py-4 text-slate-500 text-sm border-2 border-dashed border-slate-700/50 rounded-lg">
-                    Geen filters actief. Voeg een regel toe.
+                <div className="text-center py-6 text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.2em] text-xs border-2 border-dashed border-secondary/10 rounded-2xl">
+                    Geen filters actief.
                 </div>
             ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                     {rules.map((rule) => {
                         const column = columns.find(c => c.targetHeader === rule.field);
                         const operators = column ? getOperatorsForType(column.type) : [];
 
                         return (
-                            <div key={rule.id} className="flex flex-col gap-2 bg-slate-900/50 p-3 rounded-lg border border-slate-700/50 animate-in fade-in slide-in-from-top-2 relative z-30">
-                                <div className="flex justify-between items-center">
-                                    <select
-                                        value={rule.field}
-                                        onChange={(e) => {
-                                            const newField = e.target.value;
-                                            const newType = columns.find(c => c.targetHeader === newField)?.type || 'string';
-                                            updateRule(rule.id, {
-                                                field: newField,
-                                                operator: getOperatorsForType(newType)[0].value
-                                            });
-                                        }}
-                                        className="bg-slate-800 border border-slate-700 text-slate-200 rounded px-2 py-1.5 text-xs focus:border-primary focus:outline-none flex-1 mr-2"
-                                    >
-                                        {columns.map(col => (
-                                            <option key={col.targetHeader} value={col.targetHeader}>{col.targetHeader}</option>
-                                        ))}
-                                    </select>
-                                    <button
-                                        onClick={() => removeRule(rule.id)}
-                                        className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
-                                    >
-                                        <Trash2 className="w-3 h-3" />
-                                    </button>
-                                </div>
+                            <div key={rule.id} className="relative bg-white/80 dark:bg-slate-900/20 p-4 pt-10 rounded-2xl border border-secondary/10 animate-in fade-in slide-in-from-top-2 shadow-sm">
+                                <button
+                                    onClick={() => removeRule(rule.id)}
+                                    className="absolute top-3 right-3 p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                                    title="Verwijder regel"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
 
-                                <div className="flex gap-2">
-                                    <select
-                                        value={rule.operator}
-                                        onChange={(e) => updateRule(rule.id, { operator: e.target.value as FilterOperator })}
-                                        className="bg-slate-800 border border-slate-700 text-slate-200 rounded px-2 py-1.5 text-xs focus:border-primary focus:outline-none w-1/3"
-                                    >
-                                        {operators.map(op => (
-                                            <option key={op.value} value={op.value}>{op.label}</option>
-                                        ))}
-                                    </select>
+                                <div className="space-y-3">
+                                    <div className="flex flex-col gap-1.5">
+                                        <label className="text-[10px] text-slate-700 dark:text-slate-400 font-black uppercase tracking-[0.2em] ml-1">Kolom</label>
+                                        <select
+                                            value={rule.field}
+                                            onChange={(e) => {
+                                                const newField = e.target.value;
+                                                const newType = columns.find(c => c.targetHeader === newField)?.type || 'string';
+                                                updateRule(rule.id, {
+                                                    field: newField,
+                                                    operator: getOperatorsForType(newType)[0].value
+                                                });
+                                            }}
+                                            className="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2 text-xs focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold"
+                                        >
+                                            {columns.map(col => (
+                                                <option key={col.targetHeader} value={col.targetHeader}>{col.targetHeader}</option>
+                                            ))}
+                                        </select>
+                                    </div>
 
-                                    {rule.operator !== 'is_not_empty' && (
-                                        <input
-                                            type={column?.type === 'date' ? 'date' : (column?.type === 'number' || column?.type === 'currency') ? 'number' : 'text'}
-                                            value={rule.value}
-                                            onChange={(e) => updateRule(rule.id, { value: e.target.value })}
-                                            className="bg-slate-800 border border-slate-700 text-slate-200 rounded px-2 py-1.5 text-xs focus:border-primary focus:outline-none flex-1 min-w-0"
-                                            placeholder="..."
-                                        />
-                                    )}
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div className="flex flex-col gap-1.5">
+                                            <label className="text-[10px] text-slate-700 dark:text-slate-400 font-black uppercase tracking-[0.2em] ml-1">Conditie</label>
+                                            <select
+                                                value={rule.operator}
+                                                onChange={(e) => updateRule(rule.id, { operator: e.target.value as FilterOperator })}
+                                                className="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2 text-xs focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold"
+                                            >
+                                                {operators.map(op => (
+                                                    <option key={op.value} value={op.value}>{op.label}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        {rule.operator !== 'is_not_empty' && (
+                                            <div className="flex flex-col gap-1.5">
+                                                <label className="text-[10px] text-slate-700 dark:text-slate-400 font-black uppercase tracking-[0.2em] ml-1">Waarde</label>
+                                                <input
+                                                    type={column?.type === 'date' ? 'date' : (column?.type === 'number' || column?.type === 'currency') ? 'number' : 'text'}
+                                                    value={rule.value}
+                                                    onChange={(e) => updateRule(rule.id, { value: e.target.value })}
+                                                    className="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2 text-xs focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold placeholder:text-slate-400"
+                                                    placeholder="..."
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         );

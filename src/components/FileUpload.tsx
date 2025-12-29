@@ -73,10 +73,10 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
         <div className="w-full max-w-2xl mx-auto">
             <div
                 className={clsx(
-                    "relative border-2 border-dashed rounded-xl p-12 transition-all duration-300 ease-in-out cursor-pointer",
+                    "relative border-2 border-dashed rounded-3xl p-16 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden",
                     isDragging
-                        ? "border-primary bg-primary/10 scale-[1.02]"
-                        : "border-slate-600 hover:border-slate-500 hover:bg-slate-800/50 bg-slate-800/20",
+                        ? "border-secondary bg-secondary/10 scale-[1.02] shadow-2xl shadow-secondary/20"
+                        : "border-secondary/20 dark:border-white/10 hover:border-secondary/40 hover:bg-white/40 glass bg-white/20 shadow-xl",
                     isProcessing && "opacity-50 pointer-events-none"
                 )}
                 onDragOver={handleDragOver}
@@ -92,23 +92,23 @@ export default function FileUpload({ onDataLoaded }: FileUploadProps) {
                     accept=".xlsx,.xls,.csv"
                 />
 
-                <div className="flex flex-col items-center justify-center text-center space-y-4">
+                <div className="flex flex-col items-center justify-center text-center space-y-6">
                     <div className={clsx(
-                        "p-4 rounded-full transition-colors",
-                        isDragging ? "bg-primary/20 text-primary" : "bg-slate-700/50 text-slate-400"
+                        "p-6 rounded-3xl transition-all duration-500",
+                        isDragging ? "bg-secondary text-white scale-110 rotate-3" : "bg-secondary/10 text-secondary"
                     )}>
                         {isProcessing ? (
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-current" />
+                            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-current" />
                         ) : (
-                            <FileSpreadsheet className="w-8 h-8" />
+                            <FileSpreadsheet className="w-10 h-10" />
                         )}
                     </div>
 
                     <div>
-                        <h3 className="text-lg font-semibold text-white">
+                        <h3 className="text-2xl font-black text-foreground tracking-tight">
                             {isProcessing ? 'Verwerken...' : 'Sleep je Excel bestand hier'}
                         </h3>
-                        <p className="text-sm text-slate-400 mt-1">
+                        <p className="text-sm text-foreground/40 font-medium mt-2">
                             of klik om te bladeren
                         </p>
                     </div>

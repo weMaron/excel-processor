@@ -215,22 +215,22 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
     };
 
     return (
-        <div className="glass-card p-6 rounded-xl space-y-6 text-left">
-            <div className="flex items-center gap-3 border-b border-slate-700/50 pb-4">
-                <FileText className="w-6 h-6 text-blue-400" />
-                <h2 className="text-xl font-bold text-white">Rapportage</h2>
+        <div className="glass-card p-6 space-y-6">
+            <div className="flex items-center gap-3 border-b border-secondary/10 pb-4">
+                <FileText className="w-6 h-6 text-secondary" />
+                <h2 className="text-xl font-black text-foreground tracking-tight">Rapportage</h2>
             </div>
 
             <div className="space-y-4">
                 {/* Group By */}
                 <div>
-                    <label className="text-sm font-medium text-slate-300 block mb-2 flex items-center gap-2">
-                        <Settings2 className="w-4 h-4 text-slate-500" /> Groepeer PDF op:
+                    <label className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                        <Settings2 className="w-4 h-4 text-secondary/60" /> Groepeer PDF op:
                     </label>
                     <select
                         value={settings.groupBy}
                         onChange={(e) => onSettingsChange({ ...settings, groupBy: e.target.value })}
-                        className="w-full bg-slate-900/50 border border-slate-700 rounded-lg p-3 text-slate-200 focus:border-blue-500 focus:outline-none"
+                        className="w-full bg-input-bg border border-input-border rounded-xl p-3 text-input-text focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none transition-all font-bold"
                     >
                         <option value="">Kies kolom...</option>
                         {availableColumns.map(col => (
@@ -241,8 +241,8 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
 
                 {/* Columns Selection */}
                 <div>
-                    <label className="text-sm font-medium text-slate-300 block mb-2 flex items-center gap-2">
-                        <Columns className="w-4 h-4 text-slate-500" /> Kolommen in PDF:
+                    <label className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                        <Columns className="w-4 h-4 text-secondary/60" /> Kolommen in PDF:
                     </label>
                     <div className="grid grid-cols-2 gap-2">
                         {availableColumns.map(col => (
@@ -250,14 +250,14 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
                                 key={col}
                                 onClick={() => toggleColumn(col)}
                                 className={clsx(
-                                    "px-3 py-2 rounded-lg text-xs font-medium border transition-all text-left flex items-center justify-between",
+                                    "px-3 py-2 rounded-xl text-xs font-bold border transition-all text-left flex items-center justify-between",
                                     settings.selectedColumns.includes(col)
-                                        ? "bg-blue-500/20 border-blue-500 text-blue-300"
-                                        : "bg-slate-800/40 border-slate-700 text-slate-400 hover:border-slate-600"
+                                        ? "bg-secondary/10 border-secondary text-secondary shadow-sm shadow-secondary/10"
+                                        : "bg-input-bg border-input-border text-slate-500 hover:border-secondary/40 hover:bg-secondary/5 shadow-sm"
                                 )}
                             >
-                                {col}
-                                {settings.selectedColumns.includes(col) && <Check className="w-3 h-3" />}
+                                <span className="truncate mr-2">{col}</span>
+                                {settings.selectedColumns.includes(col) && <Check className="w-3 h-3 flex-shrink-0" />}
                             </button>
                         ))}
                     </div>
@@ -265,11 +265,11 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
 
                 {/* Header Text */}
                 <div>
-                    <label className="text-sm font-medium text-slate-300 block mb-2">Header Tekstblok:</label>
+                    <label className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.2em] mb-2 block">Header Tekstblok:</label>
                     <textarea
                         value={settings.headerText}
                         onChange={(e) => onSettingsChange({ ...settings, headerText: e.target.value })}
-                        className="w-full h-24 bg-slate-900/50 border border-slate-700 rounded-lg p-3 text-slate-200 focus:border-blue-500 focus:outline-none resize-none"
+                        className="w-full h-24 bg-input-bg border border-input-border rounded-xl p-3 text-input-text focus:border-secondary focus:ring-4 focus:ring-secondary/5 focus:outline-none resize-none transition-all font-bold placeholder:text-slate-400"
                         placeholder="Voeg een inleidende tekst toe aan de PDF..."
                     />
                 </div>
@@ -279,19 +279,20 @@ export default function ReportPanel({ data, columns, settings, onSettingsChange,
                 onClick={handleGenerate}
                 disabled={isGenerating || data.length === 0}
                 className={clsx(
-                    "w-full py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-all",
+                    "w-full py-5 px-6 rounded-3xl font-black uppercase tracking-widest flex items-center justify-between transition-all active:scale-95 shadow-xl relative overflow-hidden group",
                     isGenerating
-                        ? "bg-slate-700 text-slate-400 cursor-not-allowed"
-                        : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/20"
+                        ? "bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
+                        : "bg-gradient-to-r from-secondary to-primary text-white hover:shadow-primary/25 hover:scale-[1.02]"
                 )}
             >
                 {isGenerating ? (
                     <>
-                        <Loader2 className="w-5 h-5 animate-spin" /> Bezig...
+                        <span className="flex items-center gap-3"><Loader2 className="w-5 h-5 animate-spin" /> Bezig...</span>
                     </>
                 ) : (
                     <>
-                        <Download className="w-5 h-5" /> Download PDF Rapporten
+                        <Download className="w-6 h-6 text-white/80 group-hover:text-white transition-colors" />
+                        <span className="flex-1 text-center">DOWNLOAD</span>
                     </>
                 )}
             </button>

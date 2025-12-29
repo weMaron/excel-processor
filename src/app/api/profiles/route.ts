@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
         const q = query(collection(db, 'unifiedProfiles'), orderBy('updatedAt', 'desc'));
 
         const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Firestore timeout')), 5000)
+            setTimeout(() => reject(new Error('Firestore timeout')), 15000)
         );
 
         const querySnapshot = await Promise.race([
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
             stack: error.stack,
             env: {
                 hasConfig: !!process.env.FIREBASE_WEBAPP_CONFIG,
-                projectId: process.env.FIREBASE_PROJECT_ID || 'missing'
+                projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID || 'missing'
             }
         });
         return NextResponse.json({
